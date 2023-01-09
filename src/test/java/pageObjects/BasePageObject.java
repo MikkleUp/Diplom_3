@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class BasePageObject {
+public abstract class BasePageObject {
     protected final WebDriver driver;
     protected final int timeoutDuration;
     protected final By logo = By.xpath("//div[@class='AppHeader_header__logo__2D0X2']/a[@href='/']");
@@ -29,12 +29,25 @@ public class BasePageObject {
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.urlContains(urlContains));
     }
 
+    protected void clickElementWithSleep(WebElement element) {
+        try {
+            Thread.sleep(1000);
+            new WebDriverWait(driver, Duration.ofSeconds(timeoutDuration)).until(ExpectedConditions.elementToBeClickable(element)).click();
+        } catch(Exception ignored) {
+
+        }
+    }
+
     protected WebElement getConstructorButton() {
         return driver.findElement(constructorButton);
     }
 
     protected WebElement getAccountProfileButton() {
         return driver.findElement(accountProfileButton);
+    }
+
+    private WebElement getLogo() {
+        return driver.findElement(logo);
     }
 
     @Step("Press Profile button")
@@ -45,8 +58,8 @@ public class BasePageObject {
 
     @Step("Press logo")
     public void pressStellarLogo() {
-        loadElement(driver.findElement(logo));
-        driver.findElement(logo).click();
+        loadElement(getLogo());
+        getLogo().click();
     }
 
     @Step("Press Constructor button")
